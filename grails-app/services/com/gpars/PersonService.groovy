@@ -28,4 +28,15 @@ class PersonService {
         println "******########## Address ${index} for Person : ${person.id} **********"
         return address
     }
+
+    List<Person> populatePersonList(Integer size) {
+        List<Person> personList = []
+        Thread.sleep(500)
+        size.times {
+            Person person = createPerson("Mr ${it}", it * 5, 5)
+            personList.add(person)
+        }
+        return personList
+    }
+
 }
