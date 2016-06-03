@@ -10,8 +10,8 @@ class PersonService {
         person.name = name
         person.age = age
         if (person.save(flush: true)) {
-            println "************** Created person ${person.name} : ${person.id} **********"
-            addressCount.each {
+            println "******** Person ${person.name} : ${person.id} **********"
+            addressCount.times {
                 assignAddress(person)
             }
         }
@@ -25,7 +25,7 @@ class PersonService {
         address.person = person
         person.addToAddresses(address)
         address.save(flush: true)
-        println "************** Created Address ${address.id} for Person : ${person.id} **********"
+        println "******########## Address ${address.id} for Person : ${person.id} **********"
         return address
     }
 }
