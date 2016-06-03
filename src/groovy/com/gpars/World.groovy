@@ -1,4 +1,4 @@
-package gpars
+package com.gpars
 
 class World {
     int alive = 100000
