@@ -7,12 +7,14 @@ def parallelDataService
     def index() {
         List<Integer> list=parallelDataService.populateList(100000)
         List<Integer> list2=[]
-        def startTime=System.nanoTime()
+        Long startTime=System.nanoTime()
         withPool(4){
             list2=list.collectParallel{it*2}
         }
-        def endTime=System.nanoTime()
-        def millis=10**(-6)
-        render "Total Time taken : ${(endTime - startTime)*millis}"
+        Long endTime=System.nanoTime()
+        Double millis=10**(-6)
+        Double totalTimeTaken=(endTime - startTime)*millis
+        println "TOTAL TIME :- ${totalTimeTaken} ms "
+        render "Total Time taken : ${totalTimeTaken} ms"
     }
 }
