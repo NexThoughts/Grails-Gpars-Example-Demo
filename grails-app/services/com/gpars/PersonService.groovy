@@ -10,7 +10,7 @@ class PersonService {
         person.name = name
         person.age = age
         if (person.save(flush: true)) {
-            println "******** Person -> ${person.name}  **********"
+            println "******** Person -> ${person.name} : ${person.id}  **********"
             addressCount.times { Integer index ->
                 assignAddress(person, index)
             }
