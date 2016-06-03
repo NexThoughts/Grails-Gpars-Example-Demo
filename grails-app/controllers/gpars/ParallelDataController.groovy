@@ -1,5 +1,6 @@
 package gpars
 
+import com.gpars.Person
 import groovyx.gpars.ParallelEnhancer
 import groovyx.gpars.agent.Agent
 
@@ -33,9 +34,23 @@ class ParallelDataController {
     }
 
     def parallelEnhancer() {
-        List<String> animals = ['dog', 'ant', 'cat', 'whale']
-        ParallelEnhancer.enhanceInstance(animals)
-        render(animals.everyParallel { it.contains("a") } ? 'All animals contain a' : 'Some animals can live without a')
+        List<Person> personList = Person.list()
+        println "----personList------" + personList.size()
+        Long time1 = System.currentTimeMillis()
+
+        println " ********* ${personList.collect { it.name.contains('1') }.size()}"
+        Long time2 = System.currentTimeMillis()
+
+        println "*********** TOTAL TIME Taken without Parallelism :- ${(time2 - time1)} MilliSeconds "
+
+//       ================= Using GPars ======================================
+        ParallelEnhancer.enhanceInstance(personList)
+
+        Long time3 = System.currentTimeMillis()
+        println " ********* ${personList.collectParallel { it.name.contains('1') }.size()}"
+
+        println "*********** TOTAL TIME Taken With everyParallel :- ${(time3 - time2)} MilliSeconds "
+        render("Success")
     }
 
 
