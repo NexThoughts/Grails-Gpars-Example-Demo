@@ -137,4 +137,31 @@ class PersonController {
         activeActor.send 'Vishal 1'
         render "Success!!"
     }
+
+
+    def memoize = {
+        Long time1 = System.currentTimeMillis()
+
+        GParsPool.withPool {
+            def urls = ['http://www.dzone.com', 'http://www.theserverside.com', 'http://www.infoq.com', 'http://www.nexthoughts.com']
+            Closure download = { url ->
+                println "************ Downloading $url"
+                url.toURL().text.toUpperCase()
+            }
+            Closure cachingDownload = download.gmemoize()
+
+            println '**** Groovy sites today: ' + urls.findAllParallel { url -> cachingDownload(url).contains('GROOVY') }
+            println '**** Grails sites today: ' + urls.findAllParallel { url -> cachingDownload(url).contains('GRAILS') }
+            println '**** Griffon sites today: ' + urls.findAllParallel { url -> cachingDownload(url).contains('GRIFFON') }
+            println '**** Gradle sites today: ' + urls.findAllParallel { url -> cachingDownload(url).contains('GRADLE') }
+            println '**** Concurrency sites today: ' + urls.findAllParallel { url -> cachingDownload(url).contains('CONCURRENCY') }
+            println '**** GPars sites today: ' + urls.findAllParallel { url -> cachingDownload(url).contains('GPARS') }
+            println '**** Nexthoughts sites today: ' + urls.findAllParallel { url -> cachingDownload(url).contains('NEXTHOUGHTS') }
+        }
+        Long time2 = System.currentTimeMillis()
+        Double totalTimeTaken = (time2 - time1)
+
+        println "*********** TOTAL TIME Taken With minParallel :- ${totalTimeTaken} MilliSeconds "
+        render "Success!! ${totalTimeTaken} Millis"
+    }
 }
