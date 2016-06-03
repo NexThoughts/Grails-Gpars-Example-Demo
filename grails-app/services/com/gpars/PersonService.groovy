@@ -1,0 +1,31 @@
+package com.gpars
+
+import grails.transaction.Transactional
+
+@Transactional
+class PersonService {
+
+    Person createPerson(String name, Long age, Integer addressCount = 5) {
+        Person person = new Person()
+        person.name = name
+        person.age = age
+        if (person.save(flush: true)) {
+            println "************** Created person ${person.name} : ${person.id} **********"
+            addressCount.each {
+                assignAddress(person)
+            }
+        }
+        return person
+    }
+
+    Address assignAddress(Person person) {
+        Address address = new Address()
+        address.locality = "${person.name} Locality"
+        address.postalCode = 201301
+        address.person = person
+        person.addToAddresses(address)
+        address.save(flush: true)
+        println "************** Created Address ${address.id} for Person : ${person.id} **********"
+        return address
+    }
+}
