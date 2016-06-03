@@ -1,4 +1,4 @@
-package gpars
+package com.gpars
 
 import grails.transaction.Transactional
 

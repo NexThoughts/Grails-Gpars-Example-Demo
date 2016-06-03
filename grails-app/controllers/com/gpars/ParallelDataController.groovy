@@ -1,4 +1,4 @@
-package gpars
+package com.gpars
 
 import com.gpars.Person
 import groovyx.gpars.ParallelEnhancer
