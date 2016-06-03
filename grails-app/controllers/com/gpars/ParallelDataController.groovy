@@ -1,12 +1,19 @@
 package com.gpars
 
+import groovy.time.TimeCategory
 import groovyx.gpars.ParallelEnhancer
+import groovyx.gpars.actor.Actors
 import groovyx.gpars.agent.Agent
+import groovyx.gpars.dataflow.DataflowVariable
+
+import java.util.concurrent.TimeUnit
 
 import static groovyx.gpars.GParsPool.withPool
+import static groovyx.gpars.dataflow.Dataflow.task
 
 class ParallelDataController {
     def parallelDataService
+    def personService
 
     def index() {
         Long startTimeList = System.currentTimeMillis()
@@ -39,8 +46,43 @@ class ParallelDataController {
     }
 
 
-    def mapReduce() {
+    def nakul() {
+        println "DataFlow Example"
+        final def personList1 = new DataflowVariable()
+        final def personList2 = new DataflowVariable()
+        final def combinedList = new DataflowVariable()
 
+        task {
+            Thread.sleep(500)
+            combinedList << personList1.val + personList2.val
+            println ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>The combined list contains ${combinedList.val.size()}"
+        }
+
+        task {
+            List<Person> personList = []
+            (1..15).each {
+                Thread.sleep(500)
+                Person person = personService.createPerson("Mr ${it}", it * 5, 5)
+                personList.add(person)
+            }
+            println ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>PersonList 1 contains ${personList.size()} persons"
+            personList1 << personList
+
+        }
+
+        task {
+            List<Person> personList = []
+            Thread.sleep(500)
+            (1..5).each {
+
+                Person person = personService.createPerson("Mr ${it}", it * 5, 5)
+                personList.add(person)
+            }
+            println ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>PersonList 2 contains ${personList.size()} persons"
+            personList2 << personList
+        }
+
+        render "Result: ${combinedList.val}"
     }
 
     def agents() {
@@ -63,4 +105,53 @@ class ParallelDataController {
         }
         render "Check console for output !!"
     }
+
+
+    def asyncProcessing() {
+        Closure square = { it -> it * it }
+        withPool() {
+            def result = square.callAsync(1000)
+            Thread.sleep(5000)
+            println result.get()
+        }
+    }
+
+    def sendAndWait() {
+        def replyingActor = Actors.actor {
+            loop {
+                react { msg ->
+                    println "Received: $msg";
+                    reply "I've got $msg"
+                }
+            }
+        }
+        def reply1 = replyingActor.sendAndWait('Message 4')
+        def reply2 = replyingActor.sendAndWait('Message 5', 10, TimeUnit.SECONDS)
+        use(TimeCategory) {
+            def reply3 = replyingActor.sendAndWait('Message 6', 10.seconds)
+        }
+        render "Success !! View on Terminal"
+    }
+
+    def sendAndPromise() {
+        def replyingActor = Actors.actor {
+            loop {
+                react { msg ->
+                    Address.withNewSession {
+                        Address.list().every { it.postalCode == 201301 }
+                    }
+                    println "Received: $msg"
+                    reply "I've got $msg"
+                }
+            }
+        }
+        100.times {
+            Thread.sleep(10)
+        }
+        def promise = replyingActor.sendAndPromise("Hello to  the audience!!")
+        render promise.get()
+        println "Hi I won't wait for the Actor to Complete"
+
+    }
+
 }
