@@ -1,6 +1,7 @@
 package com.gpars
 
 import groovyx.gpars.GParsPool
+import groovyx.gpars.MessagingRunnable
 
 class PersonController {
 
@@ -33,5 +34,21 @@ class PersonController {
         Long endTime = System.currentTimeMillis()
         Double totalTimeTaken = (endTime - startTime) / 1000
         render "Success with GPars: Time taken ${totalTimeTaken} Seconds"
+    }
+
+    def actorExample = {
+        final MyStatelessActor actor = new MyStatelessActor();
+        actor.start();
+        actor.send("Hello Vishal");
+        actor.sendAndWait(10);
+
+        actor.sendAndContinue(10.0, new MessagingRunnable<String>() {
+            @Override
+            protected void doRun(final String s) {
+                println("******* Received a reply " + s);
+            }
+        });
+
+        render "Success!!"
     }
 }
