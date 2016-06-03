@@ -12,8 +12,8 @@ class PersonController {
 
     def create() {
         Long startTime = System.currentTimeMillis()
-        (1..100).each {
-            Person person = personService.createPerson("Mr Person ${it}", it * 5, 5)
+        (1..500).each {
+            Person person = personService.createPerson("Mr ${it}", it * 5, 5)
         }
         Long endTime = System.currentTimeMillis()
         Double totalTimeTaken = (endTime - startTime) / 1000

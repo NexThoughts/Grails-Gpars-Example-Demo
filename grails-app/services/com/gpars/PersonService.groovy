@@ -10,22 +10,22 @@ class PersonService {
         person.name = name
         person.age = age
         if (person.save(flush: true)) {
-            println "******** Person ${person.name} : ${person.id} **********"
-            addressCount.times {
-                assignAddress(person)
+            println "******** Person -> ${person.name}  **********"
+            addressCount.times { Integer index ->
+                assignAddress(person, index)
             }
         }
         return person
     }
 
-    Address assignAddress(Person person) {
+    Address assignAddress(Person person, Integer index) {
         Address address = new Address()
         address.locality = "${person.name} Locality"
         address.postalCode = 201301
         address.person = person
         person.addToAddresses(address)
         address.save(flush: true)
-        println "******########## Address ${address.id} for Person : ${person.id} **********"
+        println "******########## Address ${index} for Person : ${person.id} **********"
         return address
     }
 }
