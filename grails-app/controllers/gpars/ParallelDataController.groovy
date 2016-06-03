@@ -12,7 +12,7 @@ class ParallelDataController {
 
 //        list2 = list.collect { it * 2 }
 
-        withPool(4) {
+        withPool(2) {
             list2 = list.collectParallel { it * 2 }
         }
         Long endTime = System.currentTimeMillis()
