@@ -3,6 +3,7 @@ package com.gpars
 import groovy.time.TimeCategory
 import groovyx.gpars.GParsPool
 import groovyx.gpars.MessagingRunnable
+import groovyx.gpars.ParallelEnhancer
 import groovyx.gpars.ReactorMessagingRunnable
 import groovyx.gpars.actor.Actor
 import groovyx.gpars.actor.Actors
@@ -35,6 +36,30 @@ class PersonController {
                 Person person = personService.createPerson("Mr ${it}", it * 5, 5)
             }
         }
+        Long endTime = System.currentTimeMillis()
+        Double totalTimeTaken = (endTime - startTime) / 1000
+        render "Success with GPars: Time taken ${totalTimeTaken} Seconds"
+    }
+
+
+    def minParallelAction = {
+        Long startTime = System.currentTimeMillis()
+        List<Person> personList = Person.list()
+
+        Long time1 = System.currentTimeMillis()
+
+        println " ********* ${personList*.age.min()}"
+        Long time2 = System.currentTimeMillis()
+
+        println "*********** TOTAL TIME Taken without Parallelism :- ${(time2 - time1)} MilliSeconds "
+
+//       ================= Using GPars ======================================
+        ParallelEnhancer.enhanceInstance(personList)
+
+        Long time3 = System.currentTimeMillis()
+        println " ********* ${personList.minParallel { it.age }}"
+
+        println "*********** TOTAL TIME Taken With minParallel :- ${(time3 - time2)} MilliSeconds "
         Long endTime = System.currentTimeMillis()
         Double totalTimeTaken = (endTime - startTime) / 1000
         render "Success with GPars: Time taken ${totalTimeTaken} Seconds"
