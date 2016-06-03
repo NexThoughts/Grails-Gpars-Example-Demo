@@ -148,7 +148,7 @@ class PersonController {
                 println "************ Downloading $url"
                 url.toURL().text.toUpperCase()
             }
-            Closure cachingDownload = download.gmemoize()
+            Closure cachingDownload = download.gmemoizeAtLeast(100)
 
             println '**** Groovy sites today: ' + urls.findAllParallel { url -> cachingDownload(url).contains('GROOVY') }
             println '**** Grails sites today: ' + urls.findAllParallel { url -> cachingDownload(url).contains('GRAILS') }
@@ -163,5 +163,32 @@ class PersonController {
 
         println "*********** TOTAL TIME Taken With minParallel :- ${totalTimeTaken} MilliSeconds "
         render "Success!! ${totalTimeTaken} Millis"
+    }
+
+    def memoize2 = {
+//        cl = {a, b ->
+//            sleep(3000) // simulate some time consuming processing
+//            a + b
+//        }
+//        mem = cl.memoize()
+//
+//        def callClosure(a, b) {
+//            def start = System.currentTimeMillis()
+//
+//            mem(a, b)
+//
+//            println "Inputs(a = $a, b = $b) - took ${System.currentTimeMillis() - start} msecs."
+//        }
+//
+//        callClosure(1, 2)
+//        callClosure(1, 2)
+//        callClosure(2, 3)
+//        callClosure(2, 3)
+//        callClosure(3, 4)
+//        callClosure(3, 4)
+//
+//        callClosure(1, 2)
+//        callClosure(2, 3)
+//        callClosure(3, 4)
     }
 }
