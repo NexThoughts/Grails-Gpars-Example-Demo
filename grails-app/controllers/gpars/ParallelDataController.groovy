@@ -13,7 +13,7 @@ class ParallelDataController {
         List<Integer> list2 = []
         Long startTime = System.currentTimeMillis()
         Double totalTimeTakenForData = (startTime - startTimeList) / 1000
-        render "*** Total Time taken for List Creation : ${totalTimeTakenForData} Seconds"
+        println "*** Total Time taken for List Creation : ${totalTimeTakenForData} Seconds"
 
 //        list2 = list.collect { it * 2 }
 
