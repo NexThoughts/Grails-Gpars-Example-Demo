@@ -1,7 +1,11 @@
 package com.gpars
 
+import groovy.time.TimeCategory
 import groovyx.gpars.GParsPool
 import groovyx.gpars.MessagingRunnable
+import groovyx.gpars.ReactorMessagingRunnable
+import groovyx.gpars.actor.Actor
+import groovyx.gpars.actor.Actors
 
 class PersonController {
 
@@ -49,6 +53,25 @@ class PersonController {
             }
         });
 
+        render "Success!!"
+    }
+
+
+    def anotherActor = {
+        final Closure handler = new ReactorMessagingRunnable<Integer, Integer>() {
+            @Override
+            protected Integer doRun(final Integer integer) {
+                Thread.sleep(4000)
+                return integer * 2;
+            }
+        };
+        final Actor actor = Actors.reactor(handler);
+        use(TimeCategory) {
+            println("Result: " + actor.sendAndWait(1, 5.seconds));
+            println("Result: " + actor.sendAndWait(2, 2.seconds));
+            println("Result: " + actor.sendAndWait(3, 4.seconds));
+
+        }
         render "Success!!"
     }
 }
