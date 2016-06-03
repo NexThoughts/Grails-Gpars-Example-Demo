@@ -74,4 +74,42 @@ class PersonController {
         }
         render "Success!!"
     }
+
+
+    def anotherActor1 = {
+
+        def passiveActor = Actors.actor {
+            react { Person person ->
+                Address.withNewSession {
+                    println "***** Yay!  Received Person: $person.name";
+                    Address address = new Address()
+                    address.locality = "${person.name} Locality"
+                    address.postalCode = 201301
+                    address.person = person
+                    person.addToAddresses(address)
+                    address.save(flush: true)
+                    println "******########## Address for Person : ${person.id} **********"
+                }
+            }
+        }
+
+        def activeActor = Actors.actor {
+            react { name ->
+                println "Received Name for Person: $name";
+
+                Person.withNewSession {
+                    Person person = new Person()
+                    person.name = name
+                    person.age = 1
+                    person.save(flush: true)
+
+                    passiveActor.send(person)
+
+                }
+            }
+        }
+
+        activeActor.send 'Vishal 1'
+        render "Success!!"
+    }
 }
