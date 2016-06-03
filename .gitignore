@@ -31,3 +31,14 @@
 
 # "temporary" build files
 /target
+
+.idea/.name
+.idea/compiler.xml
+.idea/misc.xml
+.idea/modules.xml
+.idea/workspace.xml
+Grails-Gpars-Example-Demo.iml
+Grails-Gpars-Example-Demo-grailsPlugins.iml
+Grails-Gpars-Example-Demo.iml
+
+
