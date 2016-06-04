@@ -61,8 +61,7 @@ class ParallelDataController {
     }
 
 
-    def nakul() {
-        println "DataFlow Example"
+    def dataFlowExample() {
         final def personList1 = new DataflowVariable()
         final def personList2 = new DataflowVariable()
         final def combinedList = new DataflowVariable()
@@ -168,7 +167,6 @@ class ParallelDataController {
         println "Hi I won't wait for the Actor to Complete"
 
     }
-
 
 
 }
