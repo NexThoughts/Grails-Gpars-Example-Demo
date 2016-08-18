@@ -5,7 +5,6 @@ class BootStrap {
 
     def personService
 
-
     def init = { servletContext ->
         GParsPool.withPool(15) {
             (1..5000).eachParallel {
